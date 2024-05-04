@@ -11,6 +11,7 @@
     "axios": "^1.6.8",
     "core-js": "^3.8.3",
     "leaflet": "^1.9.4",
+    "leaflet-rotatedmarker": "^0.2.0",
     "vue": "^3.2.13",
     "vue3-leaflet": "^1.0.48"
   },

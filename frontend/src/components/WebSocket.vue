@@ -13,6 +13,7 @@ const emit = defineEmits(["updateCoordinates", "error"]);
 const connection = ref(null);
 
 onMounted(() => {
+
   // websocket connect
   connection.value = new WebSocket(props.url);
 
@@ -20,6 +21,7 @@ onMounted(() => {
   connection.value.onmessage = (event) => {
     const receivedData = JSON.parse(event.data);
     if (receivedData.coordinates) {
+
       // update leaflet component with new coords
       emit("updateCoordinates", receivedData.coordinates);
     }
@@ -36,6 +38,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  
 // websocket disconnect
   if (connection.value) {
     connection.value.close();

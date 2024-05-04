@@ -26,32 +26,37 @@ const websocketRef = ref(null);
 let firstRed = ref(null);
 let wait = false;
 
+//updates Leaflet's coordinates
 const updateCoordinates = (coords) => {
+
+  //if red signal exists
   if (firstRed.value != null) {
+
+    //and not waiting, update coords
     if (!wait) coordinates.value = coords;
+
+    //if coordinates of tram is same as first red signal, set wait true
     if (
       firstRed.value.Coordinates.Latitude == coords.latitude &&
       firstRed.value.Coordinates.Longitude == coords.longitude
     ) {
-      console.log("wait");
       wait = true;
     }
   }
-  // update tram coordinates in leaflet
+  // if there is not red signal, update coords
   else coordinates.value = coords;
 };
+
+//callback from SignalButton component, its fetch all signals from server with random light state
 const handleSignalsFetched = (signalsJsonString) => {
   try {
     const signalsData = JSON.parse(signalsJsonString);
 
     if (Array.isArray(signalsData.Signals)) {
-      console.log("Received signals:", signalsData.Signals);
 
+      //get first signal with red light and run tram 
       firstRed.value = signalsData.Signals[signalsData.FirstRed];
-      console.log("firstRed:", firstRed);
-
-      if (signalsData.FirstRed == -1) wait = true;
-      else wait = false;
+      wait = false;
 
       // extract coordinates from signals
       const extractedCoordinates = signalsData.Signals.map((signal) => {
@@ -62,8 +67,7 @@ const handleSignalsFetched = (signalsJsonString) => {
           // additional data can be added here if needed (e.g., State, Name)
         };
       });
-      console.log("extractedCoordinates", extractedCoordinates);
-      // update signalMarkers to pass the coordinates to LeafletMap
+      // update signalMarkers to pass the coordinates of signals to LeafletMap
       signalMarkers.value = extractedCoordinates;
     } else {
       console.error("Expected an array of signals, but received:", signalsData);

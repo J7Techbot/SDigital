@@ -9,9 +9,9 @@
   import { defineProps, ref, onMounted, watch } from 'vue';
   import 'leaflet/dist/leaflet.css';
   import * as L from 'leaflet';
-  import icon from './icon.png';
-  import signalIconRed from './signalRed.png'; // import path for the signal marker icon
-  import signalIconGreen from './signalGreen.png';
+  import icon from './resources/icon.png';
+  import signalIconRed from './resources/signalRed.png';
+  import signalIconGreen from './resources/signalGreen.png';
 
   // define props for the component
   const props = defineProps({

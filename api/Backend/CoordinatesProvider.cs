@@ -2,7 +2,6 @@
 using System.Text.Json;
 using System.Text;
 
-
 namespace api.Backend
 {
     /// <summary>
@@ -11,7 +10,7 @@ namespace api.Backend
     public class CoordinatesProvider
     {
         /// <summary>
-        /// Returns coordinates with a time delay simulating a stream.
+        /// Returns coordinates and angle with a time delay simulating a stream.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -19,41 +18,53 @@ namespace api.Backend
         {
             var culture = CultureInfo.InvariantCulture;
             var coordinatesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "gps_input.txt");
-            var coordinates = await File.ReadAllLinesAsync(coordinatesPath);
+            string[] coordinates = null;
 
-            int index = 0;
-            int length = coordinates.Length;
-
-            while (true) //this is not ok, its only for "stream mimic"
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                coordinates = await File.ReadAllLinesAsync(coordinatesPath);
+            }
+            catch
+            {
+                Console.WriteLine($"Failed to load coordinates from file.");
+            }
 
-                if (index >= length)
+            if (coordinates.Length != null)
+            {
+                int index = 0;
+                int length = coordinates.Length;
+
+                while (true) //this is not ok, its only for "stream mimic"
                 {
-                    index = 0;
-                }
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                var currentLine = coordinates[index];
-                var parts = currentLine.Split(' ');
-
-                if (parts.Length == 2)
-                {
-                    bool latParsed = double.TryParse(parts[0], NumberStyles.Float, culture, out double latitude);
-                    bool lonParsed = double.TryParse(parts[1], NumberStyles.Float, culture, out double longitude);
-
-                    if (latParsed && lonParsed)
+                    if (index >= length)
                     {
-                        yield return (latitude, longitude);
+                        index = 0;
                     }
-                    else
+
+                    var currentLine = coordinates[index];
+                    var parts = currentLine.Split(' ');
+
+                    if (parts.Length == 2)
                     {
-                        Console.WriteLine($"Failed to parse coordinates at line {index + 1}");
+                        bool latParsed = float.TryParse(parts[0], NumberStyles.Float, culture, out float latitude);
+                        bool lonParsed = float.TryParse(parts[1], NumberStyles.Float, culture, out float longitude);
+
+                        if (latParsed && lonParsed)
+                        {
+                            yield return (latitude, longitude);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Failed to parse coordinates at line {index + 1}");
+                        }
                     }
+
+                    index++;
+
+                    await Task.Delay(500); //same as above
                 }
-
-                index++;
-
-                await Task.Delay(500); //same as above
             }
         }
 
@@ -73,16 +84,15 @@ namespace api.Backend
                     coordinates = new
                     {
                         latitude = coords.Latitude,
-                        longitude = coords.Longitude
+                        longitude = coords.Longitude,
+                        angle = coords.Angle,
                     }
                 }));
 
                 yield return coordBuffer;
             }
-        }
+        }        
     }
-
-
 }
-    
+
 
