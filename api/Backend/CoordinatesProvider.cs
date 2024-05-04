@@ -19,7 +19,7 @@ namespace api.Backend
             var culture = CultureInfo.InvariantCulture;
             var coordinatesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "gps_input.txt");
             string[] coordinates = null;
-
+           
             try
             {
                 coordinates = await File.ReadAllLinesAsync(coordinatesPath);
@@ -29,7 +29,7 @@ namespace api.Backend
                 Console.WriteLine($"Failed to load coordinates from file.");
             }
 
-            if (coordinates.Length != null)
+            if (coordinates != null && coordinates.Length != 0)
             {
                 int index = 0;
                 int length = coordinates.Length;
@@ -38,14 +38,17 @@ namespace api.Backend
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
+                    //if whole collection is iterated, start again 
                     if (index >= length)
                     {
                         index = 0;
                     }
 
+                    //get coordinates from line
                     var currentLine = coordinates[index];
                     var parts = currentLine.Split(' ');
 
+                    //file must be formated, one line, two coordinates
                     if (parts.Length == 2)
                     {
                         bool latParsed = float.TryParse(parts[0], NumberStyles.Float, culture, out float latitude);
@@ -75,6 +78,7 @@ namespace api.Backend
         /// <returns></returns>
         public async IAsyncEnumerable<byte[]> GetCoordinatesBufferAsync(CancellationToken cancellationToken)
         {
+            //get coordinates and transform them into buffer
             await foreach (var coords in new CoordinatesProvider().GetCoordinatesAsync(cancellationToken))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -85,7 +89,6 @@ namespace api.Backend
                     {
                         latitude = coords.Latitude,
                         longitude = coords.Longitude,
-                        angle = coords.Angle,
                     }
                 }));
 

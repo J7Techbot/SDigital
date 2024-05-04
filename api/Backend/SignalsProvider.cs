@@ -8,7 +8,7 @@ namespace api.Backend
     public class SignalsProvider
     {
         public Signal[] Signals { get; private set; }
-        public int test;
+
         public SignalsProvider() 
         {
             //data seed
@@ -33,16 +33,22 @@ namespace api.Backend
         {           
             int indexOfRed = FindFirstRed(LightRandom(Signals));
 
-            return await Task.FromResult(JsonSerializer.Serialize(new SignalsData() { Signals = this.Signals, FirstRed = indexOfRed })); //just for sim
+            return await Task.FromResult(
+                JsonSerializer.Serialize(
+                    new SignalsData() 
+                    { 
+                        Signals = this.Signals, 
+                        FirstRed = indexOfRed 
+                    })); 
         }
 
         /// <summary>
-        /// Finds the first signal with red state (`SignalState.Red`) in a sorted array of signals.
+        /// Finds the first signal with red state (SignalState.Red) in a sorted array of signals.
         /// Binary search is used to find the first signal with a red state.        
         /// </summary>
         /// <param name="signals"></param>
         /// <returns>
-        /// Returns the index of the first signal with red state (`SignalState.Red`), if it exists.
+        /// Returns the index of the first signal with red state (SignalState.Red), if it exists.
         /// If no signal with red state is found, returns -1.
         /// </returns>
         private int FindFirstRed(Signal[] signals)
@@ -90,6 +96,8 @@ namespace api.Backend
             return signals;
         }
     }
+
+    //Wrappers for JSON string used for comunication between services
 
     public class SignalsData
     {
