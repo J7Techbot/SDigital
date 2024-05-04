@@ -28,10 +28,10 @@ let wait = false;
 
 //updates Leaflet's coordinates
 const updateCoordinates = (coords) => {
-
+  
   //if red signal exists
   if (firstRed.value != null) {
-
+    
     //and not waiting, update coords
     if (!wait) coordinates.value = coords;
 

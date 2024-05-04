@@ -9,7 +9,7 @@
   import { defineProps, ref, onMounted, watch } from 'vue';
   import 'leaflet/dist/leaflet.css';
   import * as L from 'leaflet';
-  import icon from './resources/icon.png';
+  import icon from './resources/tram.png';
   import signalIconRed from './resources/signalRed.png';
   import signalIconGreen from './resources/signalGreen.png';
 
@@ -26,22 +26,22 @@
   // define default icon for the tram
   const tramIcon = L.icon({
       iconUrl: icon,
-      iconSize: [50, 30],
-      iconAnchor: [0, 0],
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
   });
   
   // define a custom icon for signal marker red
   const signalRed = L.icon({
       iconUrl: signalIconRed,
       iconSize: [30, 30], 
-      iconAnchor: [0, 0], 
+      iconAnchor: [15, 15], 
   });
 
   // define a custom icon for signal marker green
   const signalGreen = L.icon({
       iconUrl: signalIconGreen,
       iconSize: [30, 30], 
-      iconAnchor: [0, 0], 
+      iconAnchor: [15, 15], 
   });
   
   // initialize the map

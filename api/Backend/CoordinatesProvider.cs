@@ -51,8 +51,8 @@ namespace api.Backend
                     //file must be formated, one line, two coordinates
                     if (parts.Length == 2)
                     {
-                        bool latParsed = float.TryParse(parts[0], NumberStyles.Float, culture, out float latitude);
-                        bool lonParsed = float.TryParse(parts[1], NumberStyles.Float, culture, out float longitude);
+                        bool latParsed = double.TryParse(parts[0], NumberStyles.Float, culture, out double latitude);
+                        bool lonParsed = double.TryParse(parts[1], NumberStyles.Float, culture, out double longitude);
 
                         if (latParsed && lonParsed)
                         {
