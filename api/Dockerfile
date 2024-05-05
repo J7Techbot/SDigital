@@ -1,19 +1,19 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS base
 WORKDIR /app
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["api.csproj", "."]
-RUN dotnet restore "./api.csproj"
-COPY . .
-WORKDIR "/src/."
-RUN dotnet build "api.csproj" -c Release -o /app/build
 
-FROM build AS publish
+COPY ["api.csproj", "."]
+RUN dotnet restore
+
+COPY . .
 RUN dotnet publish "api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+COPY --from=build /app/publish .
+
 ENTRYPOINT ["dotnet", "api.dll"]
